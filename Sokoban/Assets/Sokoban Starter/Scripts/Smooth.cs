@@ -4,19 +4,25 @@ using UnityEngine;
 
 public class Smooth : MonoBehaviour
 {
-    private GridObject gridObject;
-    private Vector2Int currPos;
+    private Movement movement;
     // Start is called before the first frame update
     void Start()
     {
-        gridObject = GetComponent<GridObject>();
-        currPos = gridObject.gridPosition;
-        GridManager.reference.grid[currPos.x - 1, currPos.y - 1] = this.gameObject;
+        movement = GetComponent<Movement>();
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public bool Pushed(Vector2Int pusherPos)
+    {
+        int xChange = movement.currPos.x - pusherPos.x;
+        int yChange = movement.currPos.y - pusherPos.y;
+        Vector2Int newPosition = new Vector2Int(movement.currPos.x + xChange, movement.currPos.y + yChange);
+        print(newPosition);
+        return movement.TryMovePosition(newPosition);
     }
 }
