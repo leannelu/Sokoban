@@ -8,12 +8,16 @@ public class GridManager : MonoBehaviour
     public GameObject[,] grid;
     private Vector2 dimensions;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         dimensions = GridMaker.reference.dimensions;
         reference = this;
         grid = new GameObject[(int)dimensions.x, (int)dimensions.y];
+    }
+    // Start is called before the first frame update
+    void Start()
+    {
+        
     }
 
     // Update is called once per frame

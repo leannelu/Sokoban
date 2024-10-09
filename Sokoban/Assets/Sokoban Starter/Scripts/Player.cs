@@ -4,20 +4,21 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public GridObject gridObject;
-    private Vector2 dimensions;
+    private GridObject gridObject;
     private Vector2Int currPos;
+    private Vector2 dimensions;
     // Start is called before the first frame update
     void Start()
     {
         gridObject = GetComponent<GridObject>();
+        currPos = gridObject.gridPosition;
+        GridManager.reference.grid[currPos.x - 1, currPos.y - 1] = this.gameObject;
         dimensions = GridMaker.reference.dimensions;
     }
 
     // Update is called once per frame
     void Update()
     {
-        currPos = gridObject.gridPosition;
         if (Input.GetKeyDown(KeyCode.S))
         {
             movePosition(new Vector2Int(currPos.x, currPos.y + 1));
@@ -44,6 +45,9 @@ public class Player : MonoBehaviour
         {
             if (GridManager.reference.grid[goalPosition.x - 1, goalPosition.y - 1] == null)
             {
+                GridManager.reference.grid[currPos.x - 1, currPos.y - 1] = null;
+                GridManager.reference.grid[goalPosition.x - 1, goalPosition.y - 1] = this.gameObject;
+                currPos = goalPosition;
                 gridObject.gridPosition = goalPosition;
             }
         }
