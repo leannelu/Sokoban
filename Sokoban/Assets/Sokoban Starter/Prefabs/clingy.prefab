@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5475667649447584972}
   - component: {fileID: 5475667649447584961}
   - component: {fileID: -4074332627989541288}
+  - component: {fileID: -7134790358889761113}
   m_Layer: 0
   m_Name: clingy
   m_TagString: clingy
@@ -133,3 +134,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b423be3d4fd41c84e83ced9681b07478, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  movement: {fileID: 0}
+--- !u!114 &-7134790358889761113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5475667649447584973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3af700025ffbd844e97f7c47c8e82daf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currPos: {x: 0, y: 0}
+  pushable: 0
+  stuckToMe: []
+  clungToMe: []

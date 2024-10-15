@@ -4,14 +4,11 @@ using UnityEngine;
 
 public class Clingy : MonoBehaviour
 {
-    private GridObject gridObject;
-    private Vector2Int currPos;
+    public Movement movement;
     // Start is called before the first frame update
     void Start()
     {
-        gridObject = GetComponent<GridObject>();
-        currPos = gridObject.gridPosition;
-        GridManager.reference.grid[currPos.x - 1, currPos.y - 1] = this.gameObject;
+        movement = this.GetComponent<Movement>();
     }
 
     // Update is called once per frame

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private Movement movement;
+    
     // Start is called before the first frame update
     void Start()
     {
