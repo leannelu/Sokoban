@@ -29,12 +29,6 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*
-        CheckAdjacent(GridManager.reference.grid[currPos.x - 1, currPos.y]);
-        CheckAdjacent(GridManager.reference.grid[currPos.x + 1, currPos.y]);
-        CheckAdjacent(GridManager.reference.grid[currPos.x, currPos.y + 1]);
-        CheckAdjacent(GridManager.reference.grid[currPos.x, currPos.y - 1]);*/
-
         if (currPos.x > 1) 
             hasLeft = true;
         else
@@ -72,7 +66,7 @@ public class Movement : MonoBehaviour
                 {
                     if(goalPosObjMov.pushable)
                     {
-                        print(this.tag + " pushing" + goalPosObjMov.tag);
+                        print(this.gameObject + " pushing" + goalPosObjMov.tag);
                         if (goalPosObjMov.Pushed(this.gameObject, currPos))
                         {
                             TryMovePosition(goalPosition);
@@ -97,13 +91,40 @@ public class Movement : MonoBehaviour
         currPos = goalPosition;
         gridObject.gridPosition = goalPosition;
         //check if adjacent objects are sticky and move them if they are
-        print(this.tag + " moved to " + goalPosition);
-        print(this.tag + " checking stickies");
-        //TO FIX: stack overflow when sticky tries to push a smooth, probably because the smooth is also trying to bring the sticky(bad)
-        if (hasRight) TryStickyMove(GridManager.reference.grid[gridX + 1, gridY], goalPosition, xChange, yChange);
-        if (hasLeft) TryStickyMove(GridManager.reference.grid[gridX - 1, gridY], goalPosition, xChange, yChange);
-        if (hasDown) TryStickyMove(GridManager.reference.grid[gridX, gridY + 1], goalPosition, xChange, yChange);
-        if (hasUp) TryStickyMove(GridManager.reference.grid[gridX, gridY - 1], goalPosition, xChange, yChange);
+        //print(this.gameObject + " moved to " + goalPosition);
+        //print(this.gameObject + " checking stickies");
+        if (hasRight)
+        {
+            TryStickyMove(GridManager.reference.grid[gridX + 1, gridY], goalPosition, xChange, yChange);
+            if(xChange < 0)
+            {
+                TryClingyPull(GridManager.reference.grid[gridX + 1, gridY], xChange, yChange);
+            }
+        }
+        if (hasLeft)
+        {
+            TryStickyMove(GridManager.reference.grid[gridX - 1, gridY], goalPosition, xChange, yChange);
+            if (xChange > 0)
+            {
+                TryClingyPull(GridManager.reference.grid[gridX - 1, gridY], xChange, yChange);
+            }
+        }
+        if (hasDown)
+        {
+            TryStickyMove(GridManager.reference.grid[gridX, gridY + 1], goalPosition, xChange, yChange);
+            if (yChange < 0)
+            {
+                TryClingyPull(GridManager.reference.grid[gridX, gridY + 1], xChange, yChange);
+            }
+        }
+        if (hasUp)
+        {
+            TryStickyMove(GridManager.reference.grid[gridX, gridY - 1], goalPosition, xChange, yChange);
+            if (yChange > 0)
+            {
+                TryClingyPull(GridManager.reference.grid[gridX, gridY - 1], xChange, yChange);
+            }
+        }
     }
 
     public bool Pushed(GameObject pusher, Vector2Int pusherPos)
@@ -111,7 +132,7 @@ public class Movement : MonoBehaviour
         int xChange = currPos.x - pusherPos.x;
         int yChange = currPos.y - pusherPos.y;
         Vector2Int newPosition = new Vector2Int(currPos.x + xChange, currPos.y + yChange);
-        print(this.tag + " pushed to " + newPosition);
+        print(this.gameObject + " pushed to " + newPosition);
         this.pushedBy = pusher;
         return TryMovePosition(newPosition);
     }
@@ -122,7 +143,8 @@ public class Movement : MonoBehaviour
         {
             if (adjacent.TryGetComponent<Sticky>(out Sticky sticky))
             {
-                print("adjacent: " + adjacent + " pushed by: " + pushedBy);
+                //print(this.gameObject + " found adjacent: " + sticky + " at " + sticky.movement.currPos + " and was pushed by: " + pushedBy);
+                //prevent infinite recursion by trying to move sticky that was already pushed or that pushed itself
                 if(sticky.movement.currPos != goalPosition && adjacent != pushedBy)
                 {
                     int newX = sticky.movement.currPos.x + xChange;
@@ -131,6 +153,21 @@ public class Movement : MonoBehaviour
                     print("sticky new pos is " + newPos);
                     sticky.movement.TryMovePosition(newPos);
                 }
+            }
+        }
+    }
+
+    private void TryClingyPull(GameObject adjacent, int xChange, int yChange)
+    {
+        if (adjacent != null)
+        {
+            if (adjacent.TryGetComponent<Clingy>(out Clingy clingy))
+            {
+                int newX = clingy.movement.currPos.x + xChange;
+                int newY = clingy.movement.currPos.y + yChange;
+                Vector2Int newPos = new Vector2Int(newX, newY);
+                print("sticky new pos is " + newPos);
+                clingy.movement.TryMovePosition(newPos);
             }
         }
     }
