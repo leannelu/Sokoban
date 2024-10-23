@@ -66,7 +66,7 @@ public class Movement : MonoBehaviour
                 {
                     if(goalPosObjMov.pushable)
                     {
-                        print(this.gameObject + " pushing" + goalPosObjMov.tag);
+                        //print(this.gameObject + " pushing" + goalPosObjMov.tag);
                         if (goalPosObjMov.Pushed(this.gameObject, currPos))
                         {
                             TryMovePosition(goalPosition);
@@ -96,6 +96,7 @@ public class Movement : MonoBehaviour
         if (hasRight)
         {
             TryStickyMove(GridManager.reference.grid[gridX + 1, gridY], goalPosition, xChange, yChange);
+            //only pull if it's going in the opposite direction
             if(xChange < 0)
             {
                 TryClingyPull(GridManager.reference.grid[gridX + 1, gridY], xChange, yChange);
@@ -125,6 +126,7 @@ public class Movement : MonoBehaviour
                 TryClingyPull(GridManager.reference.grid[gridX, gridY - 1], xChange, yChange);
             }
         }
+        this.pushedBy = null;
     }
 
     public bool Pushed(GameObject pusher, Vector2Int pusherPos)
@@ -132,7 +134,7 @@ public class Movement : MonoBehaviour
         int xChange = currPos.x - pusherPos.x;
         int yChange = currPos.y - pusherPos.y;
         Vector2Int newPosition = new Vector2Int(currPos.x + xChange, currPos.y + yChange);
-        print(this.gameObject + " pushed to " + newPosition);
+        //print(this.gameObject + " pushed to " + newPosition);
         this.pushedBy = pusher;
         return TryMovePosition(newPosition);
     }
@@ -144,13 +146,14 @@ public class Movement : MonoBehaviour
             if (adjacent.TryGetComponent<Sticky>(out Sticky sticky))
             {
                 //print(this.gameObject + " found adjacent: " + sticky + " at " + sticky.movement.currPos + " and was pushed by: " + pushedBy);
+                //Vector2Int diff = sticky.movement.gridObject.gridPosition - this.currPos; 
                 //prevent infinite recursion by trying to move sticky that was already pushed or that pushed itself
                 if(sticky.movement.currPos != goalPosition && adjacent != pushedBy)
                 {
                     int newX = sticky.movement.currPos.x + xChange;
                     int newY = sticky.movement.currPos.y + yChange;
                     Vector2Int newPos = new Vector2Int(newX, newY);
-                    print("sticky new pos is " + newPos);
+                    //print("sticky new pos attempting to be " + newPos);
                     sticky.movement.TryMovePosition(newPos);
                 }
             }
@@ -166,7 +169,7 @@ public class Movement : MonoBehaviour
                 int newX = clingy.movement.currPos.x + xChange;
                 int newY = clingy.movement.currPos.y + yChange;
                 Vector2Int newPos = new Vector2Int(newX, newY);
-                print("sticky new pos is " + newPos);
+                //print("clingy new pos is " + newPos);
                 clingy.movement.TryMovePosition(newPos);
             }
         }

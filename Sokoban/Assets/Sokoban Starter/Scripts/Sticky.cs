@@ -5,6 +5,7 @@ using UnityEngine;
 public class Sticky : MonoBehaviour
 {
     public Movement movement;
+    public bool track;
     
     // Start is called before the first frame update
     void Start()
@@ -14,7 +15,7 @@ public class Sticky : MonoBehaviour
     }
     void Update()
     {
-
+        if(track) print(movement.currPos);
     }
 
 
